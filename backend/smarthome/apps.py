@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class SmarthomeConfig(AppConfig):
-    name = 'smarthome'
+    name = "smarthome"
