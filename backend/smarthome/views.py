@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from .models import HomeStatus
 from .serializers import HomeStatusSerializer
+from rest_framework.generics import RetrieveAPIView
+from .serializers import UserSerializer
 
 LIGHT_TOGGLE_TOPIC = "light/toggle"
 
@@ -25,3 +27,11 @@ class HomeStatusView(APIView):
             keepalive=settings.MQTT_KEEPALIVE,
         )
         client.publish(LIGHT_TOGGLE_TOPIC, "Do It!", 2)
+
+
+class UserDetailsView(RetrieveAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
