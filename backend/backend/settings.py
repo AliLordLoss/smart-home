@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
+    "smarthome",
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,10 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,
 }
+
+
+MQTT_SERVER = "broker.emqx.io"
+MQTT_PORT = 1883
+MQTT_KEEPALIVE = 60
+MQTT_USER = ""
+MQTT_PASSWORD = ""
