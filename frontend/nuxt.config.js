@@ -1,6 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  ssr: false,
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: 'Smart Home',
@@ -38,6 +39,7 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    '@nuxtjs/auth-next',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -53,6 +55,36 @@ export default {
     },
   },
 
+  auth: {
+    strategies: {
+      local: {
+        scheme: 'refresh',
+        token: {
+          property: 'access',
+          maxAge: 900,
+        },
+        refreshToken: {
+          property: 'refresh',
+          data: 'refresh',
+          maxAge: 60 * 60 * 24 * 7,
+        },
+        user: {
+          property: false,
+        },
+        endpoints: {
+          login: { url: '/api/token/', method: 'post' },
+          refresh: { url: '/api/token/refresh/', method: 'post' },
+          user: { url: '/api/user/', method: 'get' },
+          logout: false,
+        },
+      },
+    },
+  },
+
+  router: {
+    middleware: ['auth'],
+  },
+
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
@@ -60,13 +92,13 @@ export default {
       dark: true,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
+          primary: colors.purple.darken4,
+          accent: colors.blueGrey.base,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3,
+          success: colors.teal.accent3,
         },
       },
     },
