@@ -8,11 +8,7 @@ LIGHT_STATUS_TOPIC = "light/status"
 
 class HomeStatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        from django.contrib.auth.models import AnonymousUser
-
-        user = AnonymousUser()
-
-        # user = self.scope["user"]
+        user = self.scope["user"]
 
         if not user.is_authenticated:
             try:
@@ -24,7 +20,11 @@ class HomeStatusConsumer(AsyncWebsocketConsumer):
                 print("FUCK:", e)
 
     async def connect_mqtt(self):
-        async with Client(settings.MQTT_SERVER) as client:
+        async with Client(
+            settings.MQTT_SERVER,
+            username=settings.MQTT_USER,
+            password=settings.MQTT_PASSWORD,
+        ) as client:
             print("ws: Connected successfully")
             await client.subscribe(LIGHT_STATUS_TOPIC)
             async for msg in client.messages:

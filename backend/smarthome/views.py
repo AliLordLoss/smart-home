@@ -23,11 +23,7 @@ class HomeStatusView(APIView):
         try:
             client = mqtt.Client()
             client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
-            client.connect(
-                host=settings.MQTT_SERVER,
-                port=settings.MQTT_PORT,
-                keepalive=settings.MQTT_KEEPALIVE,
-            )
+            client.connect(host=settings.MQTT_SERVER)
             client.publish(LIGHT_TOGGLE_TOPIC, "A", 1)
             client.disconnect()
             return Response("", status=status.HTTP_204_NO_CONTENT)

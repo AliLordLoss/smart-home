@@ -146,8 +146,6 @@ SIMPLE_JWT = {
 
 
 MQTT_SERVER = "localhost"
-MQTT_PORT = 1883
-MQTT_KEEPALIVE = 60
 MQTT_USER = os.environ.get("MQTT_USER")
 MQTT_PASSWORD = os.environ.get("MQTT_PASS")
 
