@@ -56,11 +56,16 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        await this.$auth.loginWith('local', {
-          data: { username: this.username, password: this.password },
-        })
+        await this.$auth
+          .loginWith('local', {
+            data: { username: this.username, password: this.password },
+          })
+          .then((res) => {
+            if (res.headers['content-type'] !== 'application/json')
+              throw new Error('Invalid response received!')
+          })
       } catch (err) {
-        console.log(err)
+        console.error(err)
       }
     },
   },

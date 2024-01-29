@@ -20,16 +20,19 @@ class HomeStatusView(APIView):
         return Response(HomeStatusSerializer(HomeStatus.objects.last()).data)
 
     def put(self, request):
-        client = mqtt.Client()
-        client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
-        client.connect(
-            host=settings.MQTT_SERVER,
-            port=settings.MQTT_PORT,
-            keepalive=settings.MQTT_KEEPALIVE,
-        )
-        client.publish(LIGHT_TOGGLE_TOPIC, "Do It!", 2)
-        client.disconnect()
-        return Response("", status=status.HTTP_204_NO_CONTENT)
+        try:
+            client = mqtt.Client()
+            client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
+            client.connect(
+                host=settings.MQTT_SERVER,
+                port=settings.MQTT_PORT,
+                keepalive=settings.MQTT_KEEPALIVE,
+            )
+            client.publish(LIGHT_TOGGLE_TOPIC, "A", 1)
+            client.disconnect()
+            return Response("", status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response("", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UserDetailsView(RetrieveAPIView):

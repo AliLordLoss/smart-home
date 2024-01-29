@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "%)b5_qwj1tej440msnb55fu6tjhm&k(^m+f588q_bfl&5vdflu"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.environ.get("HOST")]
 
 
 # Application definition
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
+    "channels",
     "smarthome",
 ]
 
@@ -116,11 +118,15 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+
+STATIC_ROOT = "static"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -139,8 +145,10 @@ SIMPLE_JWT = {
 }
 
 
-MQTT_SERVER = "broker.emqx.io"
+MQTT_SERVER = "localhost"
 MQTT_PORT = 1883
 MQTT_KEEPALIVE = 60
-MQTT_USER = ""
-MQTT_PASSWORD = ""
+MQTT_USER = os.environ.get("MQTT_USER")
+MQTT_PASSWORD = os.environ.get("MQTT_PASS")
+
+ASGI_APPLICATION = "backend.asgi.application"

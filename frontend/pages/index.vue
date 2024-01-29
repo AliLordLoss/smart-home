@@ -7,12 +7,17 @@
       >
         <v-progress-circular indeterminate />
         <div>Loading last known data...</div>
+        <div>socket: {{ socket?.readyStatus }}</div>
       </div>
       <div
         v-else
         class="w-100 d-flex flex-column align-center accent--text text-center mt-16"
       >
-        <div>lux level at home: {{ lux }}</div>
+        <div>
+          <v-icon x-large>mdi-lightbulb-{{ on ? 'on' : 'off' }}</v-icon>
+        </div>
+        <br />
+        <div>lights status at home: {{ on ? 'ON' : 'OFF' }}</div>
         <div>
           device time when sending this information was
           {{ sent_at.toLocaleString() }}
@@ -33,8 +38,9 @@ export default {
   data() {
     return {
       loading: true,
-      lux: 0,
+      on: true,
       time: new Date(),
+      socket: null,
     }
   },
   methods: {
@@ -47,9 +53,26 @@ export default {
   created() {
     this.$axios.get('/api/home-light/').then((res) => {
       this.loading = false
-      this.lux = res.data.lux
+      this.on = res.data.on
       this.sent_at = new Date(Date.parse(res.data.sent_at))
+
+      this.socket = new WebSocket(
+        window.location.toString().replace('http', 'ws') + 'api/ws/home-light/', // TODO check
+        ['notif', this.$auth.strategy.token.get().slice(7)]
+      )
+      this.socket.onmessage = (msg) => {
+        try {
+          const data = JSON.parse(msg.data)
+          this.on = data.on
+          this.sent_at = data.sent_at
+        } catch (err) {
+          console.error(err)
+        }
+      }
     })
+  },
+  beforeDestroy() {
+    this.socket?.close()
   },
 }
 </script>

@@ -53,9 +53,15 @@ export default {
     manifest: {
       lang: 'en',
     },
+    meta: {
+      name: 'Smart Home',
+      description: 'Some juicy description',
+      theme_color: '#A020F0',
+    },
   },
 
   auth: {
+    cookie: false,
     strategies: {
       local: {
         scheme: 'refresh',
@@ -115,4 +121,6 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  server: { host: '0.0.0.0', port: 3000 },
 }

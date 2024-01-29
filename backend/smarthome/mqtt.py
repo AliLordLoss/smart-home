@@ -2,8 +2,7 @@ import json
 import paho.mqtt.client as mqtt
 from django.conf import settings
 from .models import HomeStatus
-
-LIGHT_STATUS_TOPIC = "light/status"
+from .consumers import LIGHT_STATUS_TOPIC
 
 
 def on_connect(mqtt_client, userdata, flags, rc):
@@ -19,17 +18,19 @@ def on_message(mqtt_client, userdata, msg):
     if msg.topic == LIGHT_STATUS_TOPIC:
         data = json.loads(msg.payload)
         try:
-            HomeStatus(lux=data["lux"], sent_at=data["sent_at"]).save()
+            HomeStatus(on=data["on"], sent_at=data["sent_at"]).save()
         except Exception as e:
             print("Encountered error while saving data:", e)
 
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
-client.connect(
-    host=settings.MQTT_SERVER,
-    port=settings.MQTT_PORT,
-    keepalive=settings.MQTT_KEEPALIVE,
-)
+def getMQTTClient():
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
+    client.connect(
+        host=settings.MQTT_SERVER,
+        port=settings.MQTT_PORT,
+        keepalive=settings.MQTT_KEEPALIVE,
+    )
+    return client

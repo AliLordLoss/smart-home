@@ -11,6 +11,7 @@
         :key="route.path"
         :to="route.path"
         :ripple="false"
+        style="height: inherit"
         ref="link"
         plain
       >
